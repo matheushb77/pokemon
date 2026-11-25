@@ -214,6 +214,24 @@ select.toolbar-select { padding-right: 32px; appearance: none; background-image:
 .battle-intro .back-button, .rooms-header .back-button { align-self: flex-start; }
 .rooms-header { display: flex; flex-direction: column; align-items: center; }
 .battle-training { padding-top: 32px; }
+
+/* Modo tabuleiro: o caminho de dez casas. */
+.journey-screen { max-width: 1120px; margin: 0 auto; padding: 32px 0 48px; }
+.journey-path { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 18px 0 20px; padding: 0; list-style: none; }
+.journey-square { position: relative; display: grid; justify-items: center; gap: 2px; min-width: 86px; padding: 10px 8px; border: 1px solid var(--line); border-radius: 9px; background: #fff; }
+.journey-square[data-done='true'] { border-color: var(--forest); background: var(--leaf); }
+.journey-square[data-record='true'] { border-style: dashed; }
+.journey-square[data-current='true'] { border-color: var(--tomato); border-width: 2px; padding: 9px 7px; }
+.journey-number { font-family: 'Space Grotesk', sans-serif; font-size: 19px; font-weight: 700; }
+.journey-square[data-done='true'] .journey-number { color: var(--forest); }
+.journey-tier { color: var(--muted); font-size: 12px; }
+.journey-status { margin: 0 0 14px; color: var(--muted); font-size: 14px; text-align: center; }
+.journey-card { max-width: 520px; margin: 0 auto; padding: 24px; border: 1px solid var(--line); border-radius: 12px; background: #fff; text-align: center; }
+.journey-card[data-tone='loss'] { border-color: var(--tomato); }
+.journey-card[data-tone='win'] { border-color: #f4cb4f; border-width: 2px; background: #fffaea; }
+.journey-card h3 { margin: 0 0 10px; font-family: 'Space Grotesk', sans-serif; font-size: 23px; }
+.journey-card p { margin: 0 0 12px; color: var(--muted); font-size: 15px; line-height: 1.6; }
+.journey-card .load-more-button { margin-top: 6px; }
 .battle-intro h2 { margin: 0 0 14px; font-family: 'Space Grotesk', sans-serif; font-size: 38px; line-height: 1.1; }
 .battle-intro-text { margin: 0 0 24px; color: var(--muted); font-size: 16px; line-height: 1.6; }
 .battle-intro-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 20px; }
@@ -493,6 +511,8 @@ select.toolbar-select { padding-right: 32px; appearance: none; background-image:
 	.move-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 	.battle-intro h2 { font-size: 30px; }
 	.battle-modes, .room-choices, .battle-starter-list { grid-template-columns: 1fr; }
+	.journey-path { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; }
+	.journey-square { flex: 0 0 auto; }
 	.rooms-header h2 { font-size: 28px; }
 	.room-lobby { grid-template-columns: 1fr; gap: 24px; }
 	.room-qr { justify-self: stretch; }

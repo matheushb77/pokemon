@@ -3,12 +3,14 @@ import BattleArena from './components/BattleArena.jsx'
 import BattleRooms from './components/BattleRooms.jsx'
 import BotaoVoltar from './components/BotaoVoltar.jsx'
 import CatalogToolbar from './components/CatalogToolbar.jsx'
+import Journey from './components/Journey.jsx'
 import PokemonArt from './components/PokemonArt.jsx'
 import { formatName, typeLabels } from './components/PokemonCard.jsx'
 import PokemonDialog from './components/PokemonDialog.jsx'
 import PokemonGrid from './components/PokemonGrid.jsx'
 import { KANTO_STARTERS } from './data/kantoStarters.js'
 import useBattle from './hooks/useBattle.js'
+import useJourney from './hooks/useJourney.js'
 import useRoom from './hooks/useRoom.js'
 import usePokedex, { MAX_SELECTED_TYPES } from './hooks/usePokedex.js'
 
@@ -40,6 +42,7 @@ export default function App() {
   const [view, setView] = useState('pokedex')
   const [battleMode, setBattleMode] = useState(null)
   const battle = useBattle(catalog)
+  const journey = useJourney(catalog, battle)
   const rooms = useRoom(catalog)
   const starterChoices = KANTO_STARTERS.map((starter) => ({
     ...starter,
@@ -140,7 +143,9 @@ export default function App() {
         <div id="conteudo" tabIndex={-1} className="sr-only" />
 
         {view === 'battle' ? (
-          battleMode === 'amigos' ? (
+          battleMode === 'jornada' ? (
+            <Journey battle={battle} journey={journey} onBack={() => setBattleMode(null)} />
+          ) : battleMode === 'amigos' ? (
             <BattleRooms
               code={rooms.code}
               error={rooms.error}
@@ -181,6 +186,12 @@ export default function App() {
               </p>
 
               <div className="battle-modes">
+                <button className="room-choice" type="button" onClick={() => setBattleMode('jornada')}>
+                  <span className="room-choice-title">Caminho do treinador</span>
+                  <span className="room-choice-text">
+                    Dez casas, uma luta em cada. Perdeu, volta para o começo.
+                  </span>
+                </button>
                 <button className="room-choice" type="button" onClick={() => setBattleMode('amigos')}>
                   <span className="room-choice-title">Jogar com amigos</span>
                   <span className="room-choice-text">

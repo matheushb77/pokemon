@@ -95,6 +95,7 @@ export default function BattleArena({
   onChooseMove,
   onLeave,
   onRematch,
+  rematchLabel = 'Lutar de novo',
   opponent,
   opponentLabel = 'RIVAL',
   player,
@@ -347,7 +348,7 @@ export default function BattleArena({
         <div className="battle-end">
           {onRematch && (
             <button className="load-more-button" type="button" onClick={onRematch}>
-              Lutar de novo
+              {rematchLabel}
             </button>
           )}
           <button className="secondary-button" type="button" onClick={onLeave}>
