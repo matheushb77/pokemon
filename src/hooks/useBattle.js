@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ATTACK_ACTION_INTERVAL_MS, chooseMoveForComputer, resolveTurn } from '../services/battle.js'
 import { buildFighter } from '../services/fighters.js'
+import { poolForTier, tierForOpponentOf } from '../services/power.js'
 import { fetchPokemonDetails } from '../services/pokeApi.js'
 
 // Segundos que cada jogador tem para escolher o golpe da rodada.
@@ -109,7 +110,10 @@ export default function useBattle(catalog) {
     setPlayer(null)
     setOpponent(null)
 
-    const rivals = catalog.filter((entry) => entry.id !== chosenPokemon.id)
+    // O rival sai da mesma faixa de força do Pokémon escolhido, para o treino
+    // não virar um atropelo de um lado ou do outro.
+    const faixa = tierForOpponentOf(chosenPokemon.id)
+    const rivals = poolForTier(catalog, faixa).filter((entry) => entry.id !== chosenPokemon.id)
     const rivalEntry = rivals[Math.floor(Math.random() * rivals.length)]
 
     if (!rivalEntry) {

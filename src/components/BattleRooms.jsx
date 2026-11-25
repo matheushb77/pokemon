@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import BattleArena from './BattleArena.jsx'
+import BotaoVoltar from './BotaoVoltar.jsx'
 import { Campeao, Chaveamento, Comparacao, FimDoConfronto, Sorteio } from './MatchScreens.jsx'
 import QrCode from './QrCode.jsx'
 import QrScanner from './QrScanner.jsx'
@@ -292,6 +293,7 @@ export default function BattleRooms({
   onPick,
   onCreate,
   onJoin,
+  onBack,
   onLeave,
   onSaveMasterName,
   onSetReady,
@@ -343,6 +345,9 @@ export default function BattleRooms({
       data-match={['pick', 'preview', 'roundEnd', 'finished'].includes(room?.status)}
     >
       <header className="rooms-header">
+        {!room && onBack && (
+          <BotaoVoltar onClick={onBack}>Voltar para o Modo batalha</BotaoVoltar>
+        )}
         <p className="eyebrow">MÓDULO 02 · SALAS</p>
         <h2 id="rooms-title">Jogar com amigos</h2>
       </header>

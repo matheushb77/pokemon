@@ -10,6 +10,7 @@ import {
 import { buildFighterById } from './fighters.js'
 import { database } from './firebase.js'
 import { fetchPokemonDetails } from './pokeApi.js'
+import { DEFAULT_TIER, poolForTier, tierOf } from './power.js'
 import { playerList } from './rooms.js'
 
 // O torneio dentro de uma sala.
@@ -110,12 +111,18 @@ export async function startTournament({ code, room, catalog, signal }) {
   const totalRounds = Math.ceil(Math.log2(Math.max(ordem.length, 2)))
   const tamanho = teamSizeFor(totalRounds)
 
+  // O sorteio acontece todo dentro de uma faixa de força, para ninguém pegar
+  // um Caterpie contra um Mewtwo. Os iniciais de Kanto só entram como opção
+  // extra quando eles mesmos cabem na faixa: num torneio de Pokémon fortes,
+  // um Bulbasaur seria presente de grego.
+  const faixa = room.tier || DEFAULT_TIER
   const starterIds = KANTO_STARTERS.map(({ id }) => id)
-  const randomPool = catalog.filter((entry) => !starterIds.includes(entry.id))
+  const iniciaisNaFaixa = KANTO_STARTERS.filter(({ id }) => tierOf(id) === faixa)
+  const randomPool = poolForTier(catalog, faixa).filter((entry) => !starterIds.includes(entry.id))
   const randomChoices = players.flatMap(() => sorteia(randomPool, tamanho))
   const detalhes = await fetchPokemonDetails([
     ...randomChoices.map(({ id }) => ({ name: String(id) })),
-    ...KANTO_STARTERS.map(({ name }) => ({ name })),
+    ...iniciaisNaFaixa.map(({ name }) => ({ name })),
   ], signal)
   const pokemonAleatorios = detalhes.slice(0, randomChoices.length)
   const pokemonIniciais = detalhes.slice(randomChoices.length)

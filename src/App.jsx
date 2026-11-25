@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import BattleArena from './components/BattleArena.jsx'
 import BattleRooms from './components/BattleRooms.jsx'
+import BotaoVoltar from './components/BotaoVoltar.jsx'
 import CatalogToolbar from './components/CatalogToolbar.jsx'
 import PokemonArt from './components/PokemonArt.jsx'
 import { formatName, typeLabels } from './components/PokemonCard.jsx'
@@ -149,6 +150,7 @@ export default function App() {
               onCreate={rooms.create}
               onJoin={rooms.join}
               onLeave={() => { rooms.leave(); setBattleMode(null) }}
+              onBack={() => setBattleMode(null)}
               bracket={rooms.bracket}
               champion={rooms.champion}
               championName={rooms.championName}
@@ -170,6 +172,7 @@ export default function App() {
             />
           ) : battle.status === 'idle' ? (
             <section className="battle-intro" aria-labelledby="battle-intro-title">
+              <BotaoVoltar onClick={() => setView('pokedex')}>Voltar para a Pokédex</BotaoVoltar>
               <p className="eyebrow">MÓDULO 02 · BATALHA</p>
               <h2 id="battle-intro-title">Modo batalha</h2>
               <p className="battle-intro-text">
@@ -246,19 +249,22 @@ export default function App() {
               </p>
             </section>
           ) : (
-            <BattleArena
-              error={battle.error}
-              log={battle.log}
-              onChooseMove={battle.chooseMove}
-              onLeave={leaveBattle}
-              onRematch={battle.rematch}
-              opponent={battle.opponent}
-              player={battle.player}
-              round={battle.round}
-              secondsLeft={battle.secondsLeft}
-              status={battle.status}
-              winner={battle.winner}
-            />
+            <section className="battle-training">
+              <BotaoVoltar onClick={leaveBattle}>Voltar para o Modo batalha</BotaoVoltar>
+              <BattleArena
+                error={battle.error}
+                log={battle.log}
+                onChooseMove={battle.chooseMove}
+                onLeave={leaveBattle}
+                onRematch={battle.rematch}
+                opponent={battle.opponent}
+                player={battle.player}
+                round={battle.round}
+                secondsLeft={battle.secondsLeft}
+                status={battle.status}
+                winner={battle.winner}
+              />
+            </section>
           )
         ) : (
           <section id="catalogo" className="catalog-section" aria-labelledby="catalog-title">
