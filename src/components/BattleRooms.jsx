@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import BattleArena from './BattleArena.jsx'
 import BotaoVoltar from './BotaoVoltar.jsx'
+import EscolhaDoTime from './EscolhaDoTime.jsx'
+import { teamSizeFor } from '../services/match.js'
+import { DEFAULT_TIER, TIERS } from '../services/power.js'
 import { Campeao, Chaveamento, Comparacao, FimDoConfronto, Sorteio } from './MatchScreens.jsx'
 import QrCode from './QrCode.jsx'
 import QrScanner from './QrScanner.jsx'
@@ -13,6 +16,8 @@ function Entrada({ onCreate, onJoin, isBusy }) {
   const [mode, setMode] = useState(null)
   const [gymName, setGymName] = useState('')
   const [maxPlayers, setMaxPlayers] = useState(2)
+  const [tier, setTier] = useState(DEFAULT_TIER)
+  const [picking, setPicking] = useState('sorteio')
   const [code, setCode] = useState('')
   const [isScanning, setIsScanning] = useState(false)
 
@@ -43,7 +48,7 @@ function Entrada({ onCreate, onJoin, isBusy }) {
         className="room-form"
         onSubmit={(event) => {
           event.preventDefault()
-          onCreate(gymName, maxPlayers)
+          onCreate(gymName, maxPlayers, tier, picking)
         }}
       >
         <h3>Criar uma sala</h3>
@@ -69,6 +74,30 @@ function Entrada({ onCreate, onJoin, isBusy }) {
               <option value={count} key={count}>{count} jogadores</option>
             ))}
           </select>
+        </label>
+
+        <label className="room-field">
+          <span>Faixa de força</span>
+          <select value={tier} onChange={(event) => setTier(event.target.value)}>
+            {TIERS.map((item) => (
+              <option value={item.id} key={item.id}>{item.label} · {item.hint}</option>
+            ))}
+          </select>
+          <span className="room-field-hint">
+            Todo mundo luta dentro da mesma faixa, então ninguém pega um Pokémon
+            muito mais forte que o do outro.
+          </span>
+        </label>
+
+        <label className="room-field">
+          <span>Como cada um monta o time</span>
+          <select value={picking} onChange={(event) => setPicking(event.target.value)}>
+            <option value="sorteio">O sistema sorteia</option>
+            <option value="escolha">Cada um escolhe os seus</option>
+          </select>
+          <span className="room-field-hint">
+            Escolhendo, cada jogador monta o time na hora de pôr o nome do mestre.
+          </span>
         </label>
 
         <div className="room-form-actions">
@@ -204,7 +233,7 @@ function Espera({ code, isHost, players, room, onStart, onLeave, onFillWithBots 
   )
 }
 
-function NomeDoMestre({ me, players, secondsLeft, onSave, onReady }) {
+function NomeDoMestre({ catalog, me, players, room, secondsLeft, onSave, onReady, onSetChosen }) {
   const [name, setName] = useState(me?.masterName || '')
   const saved = useRef('')
   const isReady = Boolean(me?.ready)
@@ -221,8 +250,21 @@ function NomeDoMestre({ me, players, secondsLeft, onSave, onReady }) {
 
   const prontos = players.filter((player) => player.ready).length
 
+  // Quantos Pokémon cada treinador leva: um por fase até a final.
+  const tamanho = teamSizeFor(Math.ceil(Math.log2(Math.max(room.maxPlayers || 2, 2))))
+  const montaOTime = room.picking === 'escolha'
+  const escolhidos = room.chosen?.[me?.id] || []
+  const timeCompleto = !montaOTime || escolhidos.length === tamanho
+
+  function alterna(id) {
+    const novo = escolhidos.includes(id)
+      ? escolhidos.filter((item) => item !== id)
+      : [...escolhidos, id].slice(0, tamanho)
+    onSetChosen(novo)
+  }
+
   return (
-    <div className="room-naming">
+    <div className="room-naming" data-wide={montaOTime}>
       <p className="eyebrow">PREPARAÇÃO</p>
       <h3>Qual é o nome do seu mestre Pokémon?</h3>
       <p className="room-lobby-hint">
@@ -243,6 +285,16 @@ function NomeDoMestre({ me, players, secondsLeft, onSave, onReady }) {
         />
       </label>
 
+      {montaOTime && !isReady && (
+        <EscolhaDoTime
+          catalog={catalog}
+          chosen={escolhidos}
+          onToggle={alterna}
+          tamanho={tamanho}
+          tier={room.tier || DEFAULT_TIER}
+        />
+      )}
+
       <div className="room-form-actions">
         {isReady ? (
           <>
@@ -255,10 +307,10 @@ function NomeDoMestre({ me, players, secondsLeft, onSave, onReady }) {
           <button
             className="load-more-button"
             type="button"
-            disabled={!name.trim()}
+            disabled={!name.trim() || !timeCompleto}
             onClick={() => onReady(name, true)}
           >
-            Estou pronto
+            {timeCompleto ? 'Estou pronto' : `Faltam ${tamanho - escolhidos.length} Pokémon`}
           </button>
         )}
       </div>
@@ -293,10 +345,12 @@ export default function BattleRooms({
   onPick,
   onCreate,
   onJoin,
+  catalog,
   onBack,
   onLeave,
   onSaveMasterName,
   onSetReady,
+  onSetChosen,
   onSkipAuto,
   onSkipToEnd,
   onStartNaming,
@@ -376,11 +430,14 @@ export default function BattleRooms({
 
       {room && room.status === 'naming' && (
         <NomeDoMestre
+          catalog={catalog}
           me={me}
           players={players}
+          room={room}
           secondsLeft={secondsLeft}
           onSave={onSaveMasterName}
           onReady={onSetReady}
+          onSetChosen={onSetChosen}
         />
       )}
 

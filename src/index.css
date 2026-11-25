@@ -214,6 +214,23 @@ select.toolbar-select { padding-right: 32px; appearance: none; background-image:
 .battle-intro .back-button, .rooms-header .back-button { align-self: flex-start; }
 .rooms-header { display: flex; flex-direction: column; align-items: center; }
 .battle-training { padding-top: 32px; }
+.room-field-hint { color: var(--muted); font-size: 13px; font-weight: 400; line-height: 1.5; }
+
+/* Numa sala de time escolhido, a tela do nome fica mais larga para caber a grade. */
+.room-naming[data-wide='true'] { max-width: 860px; }
+.team-picker { margin: 20px 0 4px; padding-top: 18px; border-top: 1px solid var(--line); text-align: center; }
+.team-picker h4 { margin: 0 0 4px; font-family: 'Space Grotesk', sans-serif; font-size: 18px; }
+.team-picker .room-field { max-width: 320px; margin: 12px auto; }
+.team-options { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 10px; margin: 14px 0 0; padding: 0; list-style: none; }
+.team-option { position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 10px 8px; border: 1px solid var(--control-line); border-radius: 9px; background: #fff; font: inherit; cursor: pointer; transition: border-color 160ms ease; }
+.team-option:hover:not(:disabled) { border-color: var(--forest); }
+.team-option[data-chosen='true'] { border-color: var(--forest); border-width: 2px; padding: 9px 7px; background: var(--leaf); }
+.team-option:disabled { cursor: not-allowed; opacity: .45; }
+.team-option:focus-visible { outline: 3px solid var(--tomato); outline-offset: 2px; }
+.team-option-art { height: 68px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.team-option-art img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.team-option-name { font-size: 13px; font-weight: 700; overflow-wrap: anywhere; }
+.team-option-mark { position: absolute; top: 5px; right: 7px; color: var(--forest); font-size: 14px; font-weight: 700; }
 
 /* Modo tabuleiro: o caminho de dez casas. */
 .journey-screen { max-width: 1120px; margin: 0 auto; padding: 32px 0 48px; }

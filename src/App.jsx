@@ -147,6 +147,7 @@ export default function App() {
             <Journey battle={battle} journey={journey} onBack={() => setBattleMode(null)} />
           ) : battleMode === 'amigos' ? (
             <BattleRooms
+              catalog={catalog}
               code={rooms.code}
               error={rooms.error}
               isBusy={rooms.isBusy}
@@ -169,6 +170,7 @@ export default function App() {
               onFillWithBots={rooms.fillWithBots}
               onPick={rooms.pick}
               onSaveMasterName={rooms.saveMasterName}
+              onSetChosen={rooms.setChosen}
               onSetReady={rooms.setReady}
               onStartNaming={rooms.startNaming}
               players={rooms.players}

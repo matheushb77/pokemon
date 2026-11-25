@@ -9,6 +9,7 @@ import {
   update,
 } from 'firebase/database'
 import { database } from './firebase.js'
+import { DEFAULT_TIER } from './power.js'
 
 // Salas de batalha no Realtime Database.
 //
@@ -91,7 +92,7 @@ export function clearRoomFromLocation() {
 
 // Cria a sala com um código livre. A transação garante que dois aparelhos não
 // fiquem com o mesmo código, mesmo criando ao mesmo tempo.
-export async function createRoom({ gymName, maxPlayers, playerId }) {
+export async function createRoom({ gymName, maxPlayers, playerId, tier, picking }) {
   if (!isValidPlayerCount(maxPlayers)) {
     throw new Error('O número de jogadores precisa ser par, de 2 a 8.')
   }
@@ -106,6 +107,10 @@ export async function createRoom({ gymName, maxPlayers, playerId }) {
       return {
         gymName: gymName.trim() || 'Ginásio sem nome',
         maxPlayers,
+        tier: tier || DEFAULT_TIER,
+        // 'sorteio': o sistema sorteia o time de cada treinador.
+        // 'escolha': cada um monta o seu antes do torneio começar.
+        picking: picking === 'escolha' ? 'escolha' : 'sorteio',
         hostId: playerId,
         status: 'lobby',
         createdAt: serverTimestamp(),
@@ -174,6 +179,13 @@ export function setMasterName({ code, playerId, masterName }) {
   return update(ref(database, `rooms/${code}/players/${playerId}`), {
     masterName: masterName.trim().slice(0, 20),
   })
+}
+
+// Numa sala onde cada um monta o próprio time, guarda o que o jogador
+// escolheu. São só os números dos Pokémon: os atributos e os golpes vêm da
+// API quando o torneio começa.
+export function setChosen({ code, playerId, ids }) {
+  return update(ref(database, `rooms/${code}/chosen`), { [playerId]: ids })
 }
 
 // O jogador avisa que terminou. Quando todos avisam, a fase fecha sem esperar

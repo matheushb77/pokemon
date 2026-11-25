@@ -12,6 +12,12 @@
         "maxPlayers": {
           ".validate": "newData.isNumber() && newData.val() >= 2 && newData.val() <= 8 && newData.val() % 2 === 0"
         },
+        "tier": {
+          ".validate": "newData.isString() && newData.val().length <= 12"
+        },
+        "picking": {
+          ".validate": "newData.isString() && (newData.val() === 'sorteio' || newData.val() === 'escolha')"
+        },
         "hostId": {
           ".validate": "newData.isString() && newData.val().length <= 40"
         },
@@ -51,6 +57,9 @@
           }
         },
         "teams": {
+          ".validate": true
+        },
+        "chosen": {
           ".validate": true
         },
         "picks": {

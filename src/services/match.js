@@ -119,7 +119,16 @@ export async function startTournament({ code, room, catalog, signal }) {
   const starterIds = KANTO_STARTERS.map(({ id }) => id)
   const iniciaisNaFaixa = KANTO_STARTERS.filter(({ id }) => tierOf(id) === faixa)
   const randomPool = poolForTier(catalog, faixa).filter((entry) => !starterIds.includes(entry.id))
-  const randomChoices = players.flatMap(() => sorteia(randomPool, tamanho))
+
+  // Numa sala de time escolhido, cada jogador já montou o dele na fase do
+  // nome. Quem não montou, e todo treinador do computador, recebe um sorteio
+  // da mesma faixa, para a sala não travar esperando.
+  const escolhido = room.picking === 'escolha' ? (room.chosen || {}) : {}
+  const randomChoices = players.flatMap((player) => {
+    const meus = escolhido[player.id]
+    if (Array.isArray(meus) && meus.length === tamanho) return meus.map((id) => ({ id }))
+    return sorteia(randomPool, tamanho)
+  })
   const detalhes = await fetchPokemonDetails([
     ...randomChoices.map(({ id }) => ({ name: String(id) })),
     ...iniciaisNaFaixa.map(({ name }) => ({ name })),

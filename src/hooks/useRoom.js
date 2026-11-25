@@ -30,6 +30,7 @@ import {
   leaveRoom,
   playerList,
   releaseOnDisconnect,
+  setChosen,
   setMasterName,
   setReady,
   startNaming,
@@ -227,8 +228,8 @@ export default function useRoom(catalog = []) {
     chooseMove: (moveId) => submitMove({ code, playerId, moveId }),
     clearError: () => setError(''),
     code,
-    create: (gymName, maxPlayers) => run(async () => {
-      const created = await createRoom({ gymName, maxPlayers, playerId })
+    create: (gymName, maxPlayers, tier, picking) => run(async () => {
+      const created = await createRoom({ gymName, maxPlayers, playerId, tier, picking })
       attach(created)
       return created
     }),
@@ -265,6 +266,7 @@ export default function useRoom(catalog = []) {
     skipToEnd: isHost && soMaquinas && !room?.turbo && room?.status !== 'finished'
       ? () => setTurbo({ code })
       : null,
+    setChosen: (ids) => setChosen({ code, playerId, ids }),
     setReady: (name, ready) => setReady({ code, playerId, masterName: name, ready }),
     startNaming: () => startNaming(code),
   }
