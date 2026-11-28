@@ -40,7 +40,36 @@ a { color: inherit; }
 
 .topbar { height: 72px; display: flex; align-items: center; justify-content: space-between; padding: 0 max(6.5vw, 24px); background: var(--forest); color: #fff; }
 .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; }
-.brand-mark { width: 30px; height: 30px; display: grid; place-items: center; border: 2px solid #fff; border-radius: 50%; color: var(--sun); font-size: 15px; }
+.orbe { flex: 0 0 auto; display: block; }
+
+/* A esfera girando enquanto o Pokémon vem da API, e abrindo quando ele chega. */
+.captura { position: relative; display: grid; justify-items: center; gap: 14px; margin: 0 0 22px; padding: 26px 0; }
+.captura-orbe { display: block; line-height: 0; }
+.captura[data-fase='girando'] .captura-orbe { animation: orbe-gira 1.5s linear infinite, orbe-pulsa 1.1s ease-in-out infinite; }
+.captura[data-fase='abrindo'] .captura-orbe { animation: orbe-abre 620ms cubic-bezier(.3, 1.4, .5, 1) forwards; }
+.captura-anel { position: absolute; top: 26px; width: 96px; height: 96px; border: 3px solid var(--sun); border-radius: 50%; opacity: 0; }
+.captura[data-fase='abrindo'] .captura-anel { animation: orbe-estouro 620ms ease-out forwards; }
+.captura-texto { margin: 0; color: #b6d2c1; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; text-align: center; }
+.captura[data-fase='abrindo'] .captura-texto { color: var(--sun); }
+
+@keyframes orbe-gira { to { transform: rotate(360deg); } }
+@keyframes orbe-pulsa { 50% { scale: 1.07; } }
+@keyframes orbe-abre {
+	0% { scale: 1; opacity: 1; }
+	35% { scale: .84; opacity: 1; }
+	100% { scale: 1.5; opacity: 0; }
+}
+@keyframes orbe-estouro {
+	0% { scale: .7; opacity: 0; }
+	30% { opacity: 1; }
+	100% { scale: 2.1; opacity: 0; }
+}
+
+/* Quem pediu menos movimento no sistema vê a mensagem, sem a animação. */
+@media (prefers-reduced-motion: reduce) {
+	.captura-orbe, .captura-anel { animation: none !important; }
+	.captura[data-fase='abrindo'] .captura-anel { opacity: 0; }
+}
 .topbar-note { display: inline-flex; align-items: center; gap: 9px; color: #c9d8d1; font-size: 12px; font-weight: 600; letter-spacing: 0.7px; text-transform: uppercase; }
 .connection-dot { width: 7px; height: 7px; border-radius: 50%; background: #9bd19e; }
 .topbar-divider { color: #9db5aa; }
@@ -207,11 +236,19 @@ select.toolbar-select { padding-right: 32px; appearance: none; background-image:
 .battle-intro { max-width: 680px; margin: 0 auto; padding: 56px 0 72px; text-align: center; }
 
 /* Um só botão de voltar, sempre no mesmo canto, em todas as telas. */
-.back-button { display: inline-flex; align-items: center; gap: 7px; margin-bottom: 14px; padding: 7px 13px 7px 10px; border: 1px solid var(--control-line); border-radius: 999px; background: #fff; color: var(--ink); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; transition: border-color 160ms ease, background 160ms ease; }
+.back-button { position: absolute; left: 0; top: 0; display: inline-flex; align-items: center; gap: 7px; margin-bottom: 14px; padding: 7px 13px 7px 10px; border: 1px solid var(--control-line); border-radius: 999px; background: #fff; color: var(--ink); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; transition: border-color 160ms ease, background 160ms ease; }
 .back-button:hover { border-color: var(--forest); background: var(--leaf); }
 .back-button:focus-visible { outline: 3px solid var(--tomato); outline-offset: 2px; }
 .back-arrow { font-size: 16px; line-height: 1; }
-.battle-intro .back-button, .rooms-header .back-button { align-self: flex-start; }
+.battle-intro, .rooms-header, .journey-screen > .rooms-header { position: relative; }
+.battle-intro, .journey-screen { padding-top: 56px; }
+.battle-intro > .back-button, .journey-screen > .back-button { top: 50px; }
+.rooms-header { padding-top: 6px; }
+/* Em tela estreita não cabe lado a lado, então o botão volta para cima. */
+@media (max-width: 760px) {
+	.back-button { position: static; margin-bottom: 16px; }
+	.battle-intro, .journey-screen { padding-top: 24px; }
+}
 .rooms-header { display: flex; flex-direction: column; align-items: center; }
 .battle-training { padding-top: 32px; }
 .room-field-hint { color: var(--muted); font-size: 13px; font-weight: 400; line-height: 1.5; }
@@ -255,6 +292,7 @@ select.toolbar-select { padding-right: 32px; appearance: none; background-image:
 .battle-intro-note { margin: 22px 0 0; color: var(--muted); font-size: 13px; }
 
 .battle-modes, .room-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 22px 0 0; text-align: left; }
+.battle-modes .room-choice-wide { grid-column: 1 / -1; }
 .battle-starter-picker { margin-top: 24px; }
 .battle-starter-picker h3 { margin: 0 0 6px; font-family: 'Space Grotesk', sans-serif; font-size: 19px; }
 .battle-starter-picker > p { margin: 0; color: var(--muted); font-size: 14px; }

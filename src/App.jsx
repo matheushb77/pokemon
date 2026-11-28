@@ -3,6 +3,7 @@ import BattleArena from './components/BattleArena.jsx'
 import BattleRooms from './components/BattleRooms.jsx'
 import BotaoVoltar from './components/BotaoVoltar.jsx'
 import CatalogToolbar from './components/CatalogToolbar.jsx'
+import Orbe from './components/Orbe.jsx'
 import Journey from './components/Journey.jsx'
 import PokemonArt from './components/PokemonArt.jsx'
 import { formatName, typeLabels } from './components/PokemonCard.jsx'
@@ -115,7 +116,7 @@ export default function App() {
 
       <header className="topbar">
         <a className="brand" href="#inicio" aria-label="Pokédex, início">
-          <span className="brand-mark" aria-hidden="true">P</span>
+          <Orbe size={30} />
           <span>Pokédex</span>
         </a>
 
@@ -188,7 +189,7 @@ export default function App() {
               </p>
 
               <div className="battle-modes">
-                <button className="room-choice" type="button" onClick={() => setBattleMode('jornada')}>
+                <button className="room-choice room-choice-wide" type="button" onClick={() => setBattleMode('jornada')}>
                   <span className="room-choice-title">Caminho do treinador</span>
                   <span className="room-choice-text">
                     Dez casas, uma luta em cada. Perdeu, volta para o começo.

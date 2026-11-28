@@ -7,6 +7,7 @@ import {
 } from '../services/battle.js'
 import PokemonArt from './PokemonArt.jsx'
 import { formatName, typeLabels } from './PokemonCard.jsx'
+import Captura from './Captura.jsx'
 
 function Fighter({ displayHP, effect, fighter, side, sideLabel: given }) {
   const sideLabel = given || (side === 'player' ? 'SEU POKÉMON' : 'RIVAL')
@@ -276,6 +277,8 @@ export default function BattleArena({
           {leaveLabel} <span aria-hidden="true">×</span>
         </button>
       </header>
+
+      <Captura ativo={status === 'preparing'} nome={player ? formatName(player.name) : null} />
 
       {error && (
         <div className="feedback-panel" role="alert">
