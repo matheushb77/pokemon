@@ -65,7 +65,29 @@ export default function Journey({ battle, journey, onBack }) {
         <h2 id="journey-title">Caminho do treinador</h2>
       </header>
 
-      {status !== 'idle' && <MapaDaJornada position={position} recorde={recorde} status={status} />}
+      {(status === 'caminhando' || status === 'venceu') && (
+        <MapaDaJornada
+          position={position}
+          recorde={recorde}
+          status={status}
+          vindoDe={journey.vindoDe}
+        />
+      )}
+
+      {status === 'caminhando' && (
+        <div className="journey-indo">
+          {capturado && (
+            <p className="journey-captura">
+              <strong>{formatName(capturado.name)}</strong> entrou para o seu time.
+            </p>
+          )}
+          <p className="journey-indo-texto">
+            {position >= LAST_SQUARE
+              ? 'Última casa vencida...'
+              : `Seguindo para a casa ${position + 1} de ${LAST_SQUARE}.`}
+          </p>
+        </div>
+      )}
 
       {status === 'idle' && (
         <div className="journey-card">
@@ -106,12 +128,6 @@ export default function Journey({ battle, journey, onBack }) {
             ))}
           </ul>
         </div>
-      )}
-
-      {capturado && status === 'escolhendo' && (
-        <p className="journey-captura" role="status">
-          <strong>{formatName(capturado.name)}</strong> entrou para o seu time.
-        </p>
       )}
 
       {(status === 'escolhendo' || status === 'andando') && (

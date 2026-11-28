@@ -14,6 +14,10 @@ import { powerOf } from '../services/power.js'
 // sem apagar o custo de ter lutado.
 const FOLEGO = 0.18
 
+// Quanto tempo a tela do mapa fica no ar quando você passa de casa. É o tempo
+// do boneco caminhar o trecho, mais um respiro para ler quem foi capturado.
+const CAMINHADA_MS = 2600
+
 // Um integrante do time. A vida fica em null enquanto ele nunca lutou, que é o
 // mesmo que estar com a vida cheia: quem nunca apanhou não tem o que carregar.
 function novoMembro(pokemon) {
@@ -28,12 +32,13 @@ function novoMembro(pokemon) {
 }
 
 export default function useJourney(catalog, battle) {
-  // 'idle' | 'escolhendo' | 'andando' | 'perdeu' | 'venceu'
+  // 'idle' | 'escolhendo' | 'andando' | 'caminhando' | 'perdeu' | 'venceu'
   const [status, setStatus] = useState('idle')
   const [position, setPosition] = useState(0)
   const [team, setTeam] = useState([])
   const [escalado, setEscalado] = useState(0)
   const [capturado, setCapturado] = useState(null)
+  const [vindoDe, setVindoDe] = useState(0)
   const [recorde, setRecorde] = useState(0)
   const [tentativas, setTentativas] = useState(0)
 
@@ -116,14 +121,30 @@ export default function useJourney(catalog, battle) {
       setCapturado({ name: rival.name, image: rival.image })
     }
 
+    // Vencer leva para o mapa, não direto para a próxima escolha: é ali que o
+    // boneco caminha o trecho. De onde ele sai fica guardado, senão o mapa já
+    // montaria com ele no destino e não haveria caminhada nenhuma.
     const proxima = position + 1
     setRecorde((valor) => Math.max(valor, proxima))
+    setVindoDe(position)
     setPosition(proxima)
-    setStatus(proxima >= LAST_SQUARE ? 'venceu' : 'escolhendo')
+    setStatus('caminhando')
   }, [battle.opponent, battle.player, battle.status, battle.winner, escalado, position, status])
+
+  // Terminada a caminhada, segue para a escolha da casa nova (ou para o fim).
+  useEffect(() => {
+    if (status !== 'caminhando') return undefined
+
+    const id = window.setTimeout(
+      () => setStatus(position >= LAST_SQUARE ? 'venceu' : 'escolhendo'),
+      CAMINHADA_MS,
+    )
+    return () => window.clearTimeout(id)
+  }, [position, status])
 
   return {
     capturado,
+    vindoDe,
     comecarCom,
     escalado,
     lutarCom,

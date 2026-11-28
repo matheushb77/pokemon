@@ -306,6 +306,8 @@ select.toolbar-select { padding-right: 32px; appearance: none; background-image:
 .mapa { max-width: 920px; margin: 18px auto 20px; }
 .mapa-svg { width: 100%; height: auto; display: block; border: 1px solid var(--line); border-radius: 12px; }
 .mapa-legenda { margin: 10px 0 0; color: var(--muted); font-size: 14px; text-align: center; }
+.journey-indo { display: grid; justify-items: center; gap: 10px; margin-top: 6px; }
+.journey-indo-texto { margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 19px; font-weight: 700; text-align: center; }
 
 .mapa-ponto-base { fill: #fff; stroke: var(--line); stroke-width: 2.5; }
 .mapa-ponto-num { font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; fill: #4a5b53; }

@@ -42,9 +42,13 @@ function Arvore({ x, y, escala }) {
   )
 }
 
-export default function MapaDaJornada({ position, recorde, status }) {
+export default function MapaDaJornada({ position, recorde, status, vindoDe }) {
   const trilhaRef = useRef(null)
   const [pontos, setPontos] = useState([])
+  // Onde o boneco está desenhado agora. Começa de onde ele veio e só depois
+  // vira o destino: é essa troca que faz a transição acontecer. Montar já no
+  // destino não anima nada, porque não houve mudança de valor.
+  const [onde, setOnde] = useState(vindoDe ?? position)
 
   // Mede a trilha e reparte em dez pontos iguais.
   useEffect(() => {
@@ -59,13 +63,24 @@ export default function MapaDaJornada({ position, recorde, status }) {
     setPontos(medidos)
   }, [])
 
+  useEffect(() => {
+    if (vindoDe === undefined || vindoDe === position) {
+      setOnde(position)
+      return undefined
+    }
+
+    setOnde(vindoDe)
+    const id = window.requestAnimationFrame(() => setOnde(position))
+    return () => window.cancelAnimationFrame(id)
+  }, [position, vindoDe])
+
   const andadas = status === 'venceu' ? LAST_SQUARE : position
-  const emJogo = status === 'escolhendo' || status === 'andando' || status === 'venceu'
-  const parado = status === 'escolhendo'
-  const avanco = Math.min(position, LAST_SQUARE - 1) / (LAST_SQUARE - 1)
+  const emJogo = status === 'caminhando' || status === 'venceu'
+  const caminhando = status === 'caminhando' && onde !== vindoDe
+  const avanco = Math.min(onde, LAST_SQUARE - 1) / (LAST_SQUARE - 1)
 
   return (
-    <div className="mapa" data-andando={!parado && status === 'andando'}>
+    <div className="mapa" data-andando={caminhando}>
       <svg
         className="mapa-svg"
         viewBox={`0 0 ${LARGURA} ${ALTURA}`}
