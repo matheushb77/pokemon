@@ -42,6 +42,39 @@ a { color: inherit; }
 .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; }
 .orbe { flex: 0 0 auto; display: block; }
 
+/* Resposta ao clique nos botões de escolha: o card afunda um pouco e um anel
+   sai de dentro dele. A animação do anel recomeça a cada toque porque está
+   presa ao :active, que entra e sai a cada clique. */
+.room-choice, .journey-starter, .journey-member:not(:disabled), .battle-starter-choice {
+	position: relative;
+	overflow: hidden;
+	transition: scale 120ms ease, border-color 160ms ease, background 160ms ease;
+}
+.room-choice:active, .journey-starter:active,
+.journey-member:not(:disabled):active, .battle-starter-choice:active { scale: 0.975; }
+.room-choice::after, .journey-starter::after,
+.journey-member:not(:disabled)::after, .battle-starter-choice::after {
+	content: ''; position: absolute; inset: 0; margin: auto;
+	width: 18px; height: 18px; border: 2px solid var(--forest);
+	border-radius: 50%; opacity: 0; pointer-events: none;
+}
+.room-choice:active::after, .journey-starter:active::after,
+.journey-member:not(:disabled):active::after, .battle-starter-choice:active::after {
+	animation: clique-anel 520ms ease-out;
+}
+
+@keyframes clique-anel {
+	0% { scale: 1; opacity: .55; }
+	100% { scale: 22; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.room-choice::after, .journey-starter::after,
+	.journey-member::after, .battle-starter-choice::after { animation: none !important; }
+	.room-choice:active, .journey-starter:active,
+	.journey-member:active, .battle-starter-choice:active { scale: 1; }
+}
+
 /* A esfera girando enquanto o Pokémon vem da API, e abrindo quando ele chega. */
 .captura { position: relative; display: grid; justify-items: center; gap: 14px; margin: 0 0 22px; padding: 26px 0; }
 .captura-orbe { display: block; line-height: 0; }
