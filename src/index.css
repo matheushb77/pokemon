@@ -293,7 +293,7 @@ select.toolbar-select { padding-right: 32px; appearance: none; background-image:
 /* Os cards esticam até a altura do mais alto: o Bulbasaur tem dois tipos e
    ficava mais alto que os outros dois. */
 .journey-starters > li, .journey-roster > li { display: flex; }
-.journey-starter, .journey-member { width: 172px; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 16px 12px; border: 1px solid var(--control-line); border-radius: 10px; background: #fff; font: inherit; cursor: pointer; transition: border-color 160ms ease, background 160ms ease; }
+.journey-starter, .journey-member { width: 172px; min-height: 238px; justify-content: flex-start; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 16px 12px; border: 1px solid var(--control-line); border-radius: 10px; background: #fff; font: inherit; cursor: pointer; transition: border-color 160ms ease, background 160ms ease; }
 .journey-starter:hover, .journey-member:not(:disabled):hover { border-color: var(--forest); background: var(--leaf); }
 .journey-starter:focus-visible, .journey-member:focus-visible { outline: 3px solid var(--tomato); outline-offset: 2px; }
 .journey-member:disabled { cursor: default; }

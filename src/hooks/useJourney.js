@@ -9,6 +9,11 @@ import { powerOf } from '../services/power.js'
 // acordo com quem você escalou, captura quem você derrota e decide se avança
 // ou se volta para o começo.
 
+// Quanto cada Pokémon do time recupera ao passar de casa. Não é descanso
+// completo: é um fôlego, o bastante para quem lutou poder voltar mais adiante
+// sem apagar o custo de ter lutado.
+const FOLEGO = 0.18
+
 // Um integrante do time. A vida fica em null enquanto ele nunca lutou, que é o
 // mesmo que estar com a vida cheia: quem nunca apanhou não tem o que carregar.
 function novoMembro(pokemon) {
@@ -93,6 +98,14 @@ export default function useJourney(catalog, battle) {
       setStatus('perdeu')
       return
     }
+
+    // Passar de casa dá um fôlego ao time inteiro, inclusive a quem acabou de
+    // lutar. Quem está de vida cheia continua como está.
+    setTeam((atual) => atual.map((membro) => (
+      membro.hp === null || membro.maxHP === null
+        ? membro
+        : { ...membro, hp: Math.min(membro.maxHP, membro.hp + Math.ceil(membro.maxHP * FOLEGO)) }
+    )))
 
     // Quem perdeu a luta vem junto, de vida cheia: é o prêmio que deixa seguir
     // depois de o seu time ter apanhado.
