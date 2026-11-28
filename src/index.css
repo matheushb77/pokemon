@@ -269,7 +269,7 @@ select.toolbar-select { padding-right: 32px; appearance: none; background-image:
 .battle-intro { max-width: 680px; margin: 0 auto; padding: 56px 0 72px; text-align: center; }
 
 /* Um só botão de voltar, sempre no mesmo canto, em todas as telas. */
-.back-button { position: absolute; left: 0; top: 0; display: inline-flex; align-items: center; gap: 7px; margin-bottom: 14px; padding: 7px 13px 7px 10px; border: 1px solid var(--control-line); border-radius: 999px; background: #fff; color: var(--ink); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; transition: border-color 160ms ease, background 160ms ease; }
+.back-button { position: absolute; left: 0; top: 0; z-index: 2; display: inline-flex; align-items: center; gap: 7px; margin-bottom: 14px; padding: 7px 13px 7px 10px; border: 1px solid var(--control-line); border-radius: 999px; background: #fff; color: var(--ink); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; transition: border-color 160ms ease, background 160ms ease; }
 .back-button:hover { border-color: var(--forest); background: var(--leaf); }
 .back-button:focus-visible { outline: 3px solid var(--tomato); outline-offset: 2px; }
 .back-arrow { font-size: 16px; line-height: 1; }
