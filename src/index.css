@@ -240,7 +240,7 @@ select.toolbar-select { padding-right: 32px; appearance: none; background-image:
 .back-button:hover { border-color: var(--forest); background: var(--leaf); }
 .back-button:focus-visible { outline: 3px solid var(--tomato); outline-offset: 2px; }
 .back-arrow { font-size: 16px; line-height: 1; }
-.battle-intro, .rooms-header, .journey-screen > .rooms-header { position: relative; }
+.battle-intro, .rooms-header, .journey-screen { position: relative; }
 .battle-intro, .journey-screen { padding-top: 56px; }
 .battle-intro > .back-button, .journey-screen > .back-button { top: 50px; }
 .rooms-header { padding-top: 6px; }
@@ -285,7 +285,21 @@ select.toolbar-select { padding-right: 32px; appearance: none; background-image:
 .journey-card[data-tone='win'] { border-color: #f4cb4f; border-width: 2px; background: #fffaea; }
 .journey-card h3 { margin: 0 0 10px; font-family: 'Space Grotesk', sans-serif; font-size: 23px; }
 .journey-card p { margin: 0 0 12px; color: var(--muted); font-size: 15px; line-height: 1.6; }
+
 .journey-card .load-more-button { margin-top: 6px; }
+.journey-starters, .journey-roster { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin: 16px 0 0; padding: 0; list-style: none; }
+.journey-starter, .journey-member { display: flex; flex-direction: column; align-items: center; gap: 5px; width: 136px; padding: 12px 10px; border: 1px solid var(--control-line); border-radius: 10px; background: #fff; font: inherit; cursor: pointer; transition: border-color 160ms ease, background 160ms ease; }
+.journey-starter:hover, .journey-member:not(:disabled):hover { border-color: var(--forest); background: var(--leaf); }
+.journey-starter:focus-visible, .journey-member:focus-visible { outline: 3px solid var(--tomato); outline-offset: 2px; }
+.journey-member:disabled { cursor: default; }
+.journey-member[data-chosen='true'] { border-color: var(--forest); border-width: 2px; padding: 11px 9px; background: var(--leaf); }
+.journey-starter-art, .journey-member-art { height: 82px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.journey-starter-art img, .journey-member-art img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.journey-starter-name, .journey-member-name { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; overflow-wrap: anywhere; }
+.journey-member-hp { color: var(--muted); font-size: 12px; text-align: center; }
+.journey-team { margin: 20px auto 22px; text-align: center; }
+.journey-team h3 { margin: 0 0 4px; font-family: 'Space Grotesk', sans-serif; font-size: 21px; }
+.journey-captura { margin: 0 auto 4px; padding: 9px 14px; border: 1px solid var(--forest); border-radius: 999px; background: var(--leaf); color: var(--forest); font-size: 14px; text-align: center; width: fit-content; }
 .battle-intro h2 { margin: 0 0 14px; font-family: 'Space Grotesk', sans-serif; font-size: 38px; line-height: 1.1; }
 .battle-intro-text { margin: 0 0 24px; color: var(--muted); font-size: 16px; line-height: 1.6; }
 .battle-intro-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 20px; }

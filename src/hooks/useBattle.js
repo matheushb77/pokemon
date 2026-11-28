@@ -91,7 +91,10 @@ export default function useBattle(catalog) {
     return () => window.clearTimeout(timeoutId)
   }, [playTurn, secondsLeft, status])
 
-  const start = useCallback(async (chosenPokemon) => {
+  // A jornada precisa de duas coisas que o treino avulso não precisa: entrar na
+  // luta com a vida que sobrou da casa anterior, e enfrentar um rival que ela
+  // mesma escolheu em vez de um sorteado da faixa.
+  const start = useCallback(async (chosenPokemon, opcoes = {}) => {
     cancelPending()
     isResolving.current = false
     roundRef.current = 1
@@ -111,10 +114,14 @@ export default function useBattle(catalog) {
     setOpponent(null)
 
     // O rival sai da mesma faixa de força do Pokémon escolhido, para o treino
-    // não virar um atropelo de um lado ou do outro.
-    const faixa = tierForOpponentOf(chosenPokemon.id)
-    const rivals = poolForTier(catalog, faixa).filter((entry) => entry.id !== chosenPokemon.id)
-    const rivalEntry = rivals[Math.floor(Math.random() * rivals.length)]
+    // não virar um atropelo de um lado ou do outro. Quem já chega com um rival
+    // em mãos, como a jornada, usa o dele.
+    let rivalEntry = opcoes.rival
+    if (!rivalEntry) {
+      const faixa = tierForOpponentOf(chosenPokemon.id)
+      const rivals = poolForTier(catalog, faixa).filter((entry) => entry.id !== chosenPokemon.id)
+      rivalEntry = rivals[Math.floor(Math.random() * rivals.length)]
+    }
 
     if (!rivalEntry) {
       setError('Não foi possível encontrar um rival no catálogo.')
@@ -128,12 +135,18 @@ export default function useBattle(catalog) {
       const [rival, fetchedChoice] = await fetchPokemonDetails(needed, nextController.signal)
       const choice = fetchedChoice || chosenPokemon
 
-      const [playerFighter, opponentFighter] = await Promise.all([
+      const [montado, opponentFighter] = await Promise.all([
         buildFighter(choice, nextController.signal),
         buildFighter(rival, nextController.signal),
       ])
 
       if (nextController.signal.aborted) return
+
+      // Entrando machucado, a vida começa onde parou, nunca abaixo de 1: um
+      // Pokémon com zero de vida não teria como lutar.
+      const playerFighter = opcoes.hpInicial
+        ? { ...montado, currentHP: Math.max(1, Math.min(opcoes.hpInicial, montado.maxHP)) }
+        : montado
 
       fighters.current = { player: playerFighter, opponent: opponentFighter }
       setPlayer(playerFighter)
