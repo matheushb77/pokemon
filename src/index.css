@@ -302,6 +302,51 @@ select.toolbar-select { padding-right: 32px; appearance: none; background-image:
 .team-option-name { font-size: 13px; font-weight: 700; overflow-wrap: anywhere; }
 .team-option-mark { position: absolute; top: 5px; right: 7px; color: var(--forest); font-size: 14px; font-weight: 700; }
 
+/* O mapa da jornada: trilha, pontos de encontro e o caminhante. */
+.mapa { max-width: 920px; margin: 18px auto 20px; }
+.mapa-svg { width: 100%; height: auto; display: block; border: 1px solid var(--line); border-radius: 12px; }
+.mapa-legenda { margin: 10px 0 0; color: var(--muted); font-size: 14px; text-align: center; }
+
+.mapa-ponto-base { fill: #fff; stroke: var(--line); stroke-width: 2.5; }
+.mapa-ponto-num { font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; fill: #4a5b53; }
+.mapa-ponto-aura { fill: none; stroke: none; }
+
+.mapa-ponto[data-done='true'] .mapa-ponto-base { fill: var(--forest); stroke: var(--forest); }
+.mapa-ponto[data-done='true'] .mapa-ponto-num { fill: #fff; }
+.mapa-ponto[data-record='true'] .mapa-ponto-base { stroke-dasharray: 4 3; }
+.mapa-ponto[data-current='true'] .mapa-ponto-base { fill: #fff; stroke: var(--tomato); stroke-width: 3.5; }
+.mapa-ponto[data-current='true'] .mapa-ponto-num { fill: var(--tomato); }
+.mapa-ponto[data-current='true'] .mapa-ponto-aura {
+	stroke: var(--tomato); stroke-width: 2; animation: mapa-pulso 1.8s ease-out infinite;
+}
+
+/* O caminhante anda pela própria trilha: a distância é uma transição, então
+   mudar de casa faz ele percorrer o trecho em vez de pular para o ponto. */
+.mapa-andarilho {
+	offset-rotate: 0deg;
+	transition: offset-distance 1400ms cubic-bezier(.45, .05, .3, 1);
+}
+.mapa[data-andando='true'] .mapa-andarilho-corpo { animation: mapa-passo 520ms ease-in-out infinite; }
+.mapa[data-andando='true'] .mapa-perna-a { animation: mapa-perna 520ms ease-in-out infinite; }
+.mapa[data-andando='true'] .mapa-perna-b { animation: mapa-perna 520ms ease-in-out infinite reverse; }
+
+@keyframes mapa-pulso {
+	0% { r: 14; opacity: .8; }
+	100% { r: 26; opacity: 0; }
+}
+@keyframes mapa-passo {
+	50% { transform: translateY(-1.6px); }
+}
+@keyframes mapa-perna {
+	0%, 100% { transform: translateY(0) scaleY(1); }
+	50% { transform: translateY(-1.5px) scaleY(.82); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.mapa-andarilho { transition: none; }
+	.mapa-ponto-aura, .mapa-andarilho-corpo, .mapa-perna { animation: none !important; }
+}
+
 /* Modo tabuleiro: o caminho de dez casas. */
 .journey-screen { max-width: 1120px; margin: 0 auto; padding: 32px 0 48px; }
 .journey-path { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 18px 0 20px; padding: 0; list-style: none; }

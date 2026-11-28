@@ -1,39 +1,12 @@
 import BattleArena from './BattleArena.jsx'
 import BotaoVoltar from './BotaoVoltar.jsx'
+import MapaDaJornada from './MapaDaJornada.jsx'
 import PokemonArt from './PokemonArt.jsx'
 import { formatName, typeLabels } from './PokemonCard.jsx'
-import { exigenciaDaCasa, LAST_SQUARE, STARTERS } from '../services/journey.js'
+import { LAST_SQUARE, STARTERS } from '../services/journey.js'
 
 const ART_URL = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork'
 const arte = (id) => `${ART_URL}/${id}.png`
-
-function Caminho({ position, recorde, status }) {
-  const andadas = status === 'venceu' ? LAST_SQUARE : position
-
-  return (
-    <ol className="journey-path">
-      {Array.from({ length: LAST_SQUARE }, (unused, indice) => {
-        const atual = (status === 'escolhendo' || status === 'andando') && indice === position
-
-        return (
-          <li
-            className="journey-square"
-            key={indice}
-            data-current={atual}
-            data-done={indice < andadas}
-            data-record={indice >= andadas && !atual && indice < recorde}
-            aria-current={atual ? 'step' : undefined}
-          >
-            <span className="journey-number">{indice + 1}</span>
-            <span className="journey-tier">
-              {`${Math.round((exigenciaDaCasa(indice) - 1) * 100)}%`}
-            </span>
-          </li>
-        )
-      })}
-    </ol>
-  )
-}
 
 function Time({ escalado, onEscalar, position, status, team }) {
   return (
@@ -44,8 +17,7 @@ function Time({ escalado, onEscalar, position, status, team }) {
           : 'Seu time'}
       </h3>
       <p className="room-lobby-hint">
-        A vida não recupera entre as casas. O rival desta casa é
-        {' '}{Math.round((exigenciaDaCasa(position) - 1) * 100)}% mais forte que quem você escalar.
+        A vida não recupera entre as casas, mas todo mundo recupera um pouco ao passar de uma.
       </p>
 
       <ul className="journey-roster">
@@ -93,7 +65,7 @@ export default function Journey({ battle, journey, onBack }) {
         <h2 id="journey-title">Caminho do treinador</h2>
       </header>
 
-      {status !== 'idle' && <Caminho position={position} recorde={recorde} status={status} />}
+      {status !== 'idle' && <MapaDaJornada position={position} recorde={recorde} status={status} />}
 
       {status === 'idle' && (
         <div className="journey-card">
