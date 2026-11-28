@@ -281,21 +281,28 @@ select.toolbar-select { padding-right: 32px; appearance: none; background-image:
 .journey-tier { color: var(--muted); font-size: 12px; }
 .journey-status { margin: 0 0 14px; color: var(--muted); font-size: 14px; text-align: center; }
 .journey-card { max-width: 520px; margin: 0 auto; padding: 24px; border: 1px solid var(--line); border-radius: 12px; background: #fff; text-align: center; }
+/* O painel dos iniciais precisa caber os três lado a lado. */
+.journey-card:has(.journey-starters) { max-width: 660px; }
 .journey-card[data-tone='loss'] { border-color: var(--tomato); }
 .journey-card[data-tone='win'] { border-color: #f4cb4f; border-width: 2px; background: #fffaea; }
 .journey-card h3 { margin: 0 0 10px; font-family: 'Space Grotesk', sans-serif; font-size: 23px; }
 .journey-card p { margin: 0 0 12px; color: var(--muted); font-size: 15px; line-height: 1.6; }
 
 .journey-card .load-more-button { margin-top: 6px; }
-.journey-starters, .journey-roster { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin: 16px 0 0; padding: 0; list-style: none; }
-.journey-starter, .journey-member { display: flex; flex-direction: column; align-items: center; gap: 5px; width: 136px; padding: 12px 10px; border: 1px solid var(--control-line); border-radius: 10px; background: #fff; font: inherit; cursor: pointer; transition: border-color 160ms ease, background 160ms ease; }
+.journey-starters, .journey-roster { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin: 18px 0 0; padding: 0; list-style: none; }
+/* Os cards esticam até a altura do mais alto: o Bulbasaur tem dois tipos e
+   ficava mais alto que os outros dois. */
+.journey-starters > li, .journey-roster > li { display: flex; }
+.journey-starter, .journey-member { width: 172px; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 16px 12px; border: 1px solid var(--control-line); border-radius: 10px; background: #fff; font: inherit; cursor: pointer; transition: border-color 160ms ease, background 160ms ease; }
 .journey-starter:hover, .journey-member:not(:disabled):hover { border-color: var(--forest); background: var(--leaf); }
 .journey-starter:focus-visible, .journey-member:focus-visible { outline: 3px solid var(--tomato); outline-offset: 2px; }
 .journey-member:disabled { cursor: default; }
-.journey-member[data-chosen='true'] { border-color: var(--forest); border-width: 2px; padding: 11px 9px; background: var(--leaf); }
-.journey-starter-art, .journey-member-art { height: 82px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.journey-member[data-chosen='true'] { border-color: var(--forest); border-width: 2px; padding: 15px 11px; background: var(--leaf); }
+.journey-starter-art, .journey-member-art { width: 100%; height: 112px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
 .journey-starter-art img, .journey-member-art img { max-width: 100%; max-height: 100%; object-fit: contain; }
-.journey-starter-name, .journey-member-name { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; overflow-wrap: anywhere; }
+.journey-starter-name, .journey-member-name { font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700; overflow-wrap: anywhere; }
+/* Os tipos encostam no rodapé do card, então todos terminam na mesma linha. */
+.journey-starter .type-list { justify-content: center; margin-top: auto; padding-top: 4px; }
 .journey-member-hp { color: var(--muted); font-size: 12px; text-align: center; }
 .journey-team { margin: 20px auto 22px; text-align: center; }
 .journey-team h3 { margin: 0 0 4px; font-family: 'Space Grotesk', sans-serif; font-size: 21px; }
